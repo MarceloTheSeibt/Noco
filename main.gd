@@ -207,7 +207,7 @@ func rearrange_menu(button_deleted, button_parent):
 	button_0.grab_focus()
 
 	if button_parent == $Board/HitboxesA/A1/A1:
-		if $Board/HitboxesA/A2/A2.get_child(0) != null:
+		if $Board/HitboxesA/A2/A2.get_child(0) != null and $Board/HitboxesB/B1/B1.get_child(0) != null:
 			$Board/HitboxesA/A2/A2.get_child(0).set_focus_neighbor(1, $Board/HitboxesB/B1/B1.get_child(0).get_path())
 
 
