@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6jq5i787oe3q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3pxwo"]
+radius = 52.0865
+
+[node name="X" type="Area2D"]
+scale = Vector2(0.85, 0.85)
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2(-71.4939, -55.5294)
+rotation = -0.785398
+color = Color(0, 0, 0, 1)
+antialiased = true
+polygon = PackedVector2Array(0.707108, 12.0208, 0, 14.3563, 7.62939e-06, 79.0192, 11.3137, 90.5097, 7.62939e-06, 102.442, -3.8147e-06, 197.579, 0.474041, 200.461, 2.96971, 201.292, 21.6349, 193.148, 23.3345, 191.626, 24, 190.05, 24, 102.707, 16.9706, 90.5097, 22.9351, 79.8364, 24.5989, 1.6387, 2.50118, 10.1346)
+
+[node name="Polygon2D3" type="Polygon2D" parent="."]
+position = Vector2(-69.274, -57.589)
+rotation = -0.785398
+antialiased = true
+polygon = PackedVector2Array(0.707108, 12.0208, -0.357849, 14.949, 7.62939e-06, 79.0192, 7.62939e-06, 102.442, -3.8147e-06, 197.579, 0.474041, 200.461, 2.96971, 201.292, 21.6349, 193.148, 23.3345, 191.626, 24, 190.05, 24, 102.707, 20.7409, 78.8911, 24, 2.24123, 23.3345, 0.7071, 21.516, 1.17097, 2.50118, 10.1346)
+
+[node name="Polygon2D2" type="Polygon2D" parent="."]
+position = Vector2(56.5061, -71.5294)
+rotation = 0.785398
+antialiased = true
+polygon = PackedVector2Array(3.8147e-06, 14.1421, 0, 77.9585, -0.191452, 98.0218, 0, 190.807, 0.707108, 191.626, 1.39704, 191.635, 19.3393, 182.663, 21.9203, 180.312, 22.6554, 177.324, 23.1015, 98.0218, 23.4109, 77.6946, 24.0416, 2.82844, 23.3345, 0.707115, 21.2132, 7.62939e-06, 2.12132, 9.1924, 3.8147e-06, 11.3137)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_3pxwo")
+
+[node name="Polygon2D4" type="Polygon2D" parent="."]
+position = Vector2(1.17647, 8.23529)
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-69.4118, 75.2941, 1.17647, 1.17647, 85.8824, 88.2353, 1.17647, 4.70588)
+
+[node name="Polygon2D5" type="Polygon2D" parent="."]
+position = Vector2(2.35294, -10.5882)
+rotation = -3.14159
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-55.2941, 61.1765, 1.17647, 1.17647, 67.0588, 76.4706, 1.17647, 4.70588)
+
+[node name="Polygon2D6" type="Polygon2D" parent="."]
+position = Vector2(-8.23529, -3.52941)
+rotation = 1.5708
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-56.4706, 63.5294, 1.17647, 1.17647, 77.6471, 77.6471, 1.17647, 3.52941)
+
+[node name="Polygon2D7" type="Polygon2D" parent="."]
+position = Vector2(15.2941, -1.17647)
+rotation = -1.5708
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-55.2941, 61.1765, 1.17647, 1.17647, 65.8824, 70.5882, 1.17647, 3.52941)
