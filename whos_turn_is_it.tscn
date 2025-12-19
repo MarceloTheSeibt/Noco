@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://wuy1mq7sw2gg"]
+[gd_scene format=3 uid="uid://ct00emr2s7yrl"]
 
-[node name="Your_symbol_is" type="CanvasLayer"]
-offset = Vector2(0, 170)
-transform = Transform2D(1, 0, 0, 1, 0, 170)
+[node name="Whos_turn_is_it" type="CanvasLayer"]
+offset = Vector2(0, -50)
+transform = Transform2D(1, 0, 0, 1, 0, -50)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_left = 18.0
@@ -27,7 +27,7 @@ pivot_offset = Vector2(15.85, 22.75)
 size_flags_horizontal = 4
 color = Color(0, 0, 0, 1)
 
-[node name="Your_symbol_is" type="Label" parent="."]
+[node name="Its_turn" type="Label" parent="."]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
@@ -37,18 +37,19 @@ offset_right = 253.0
 offset_bottom = -111.0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 21
-text = "O seu símbolo é:"
+text = "É a vez de:"
 horizontal_alignment = 1
 
-[node name="Symbol" type="Label" parent="."]
+[node name="Player_or_CPU" type="RichTextLabel" parent="."]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 18.0
-offset_top = -153.0
-offset_right = 253.0
-offset_bottom = 19.0
+offset_left = -14.0
+offset_top = -100.0
+offset_right = 288.0
+offset_bottom = 84.0
 grow_vertical = 2
-theme_override_font_sizes/font_size = 126
-text = "○"
-horizontal_alignment = 1
+theme_override_font_sizes/normal_font_size = 46
+bbcode_enabled = true
+text = "[center][u]Jogador 1[/u]"
+autowrap_mode = 0

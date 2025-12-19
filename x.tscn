@@ -6,6 +6,13 @@ radius = 52.0865
 [node name="X" type="Area2D"]
 scale = Vector2(0.85, 0.85)
 
+[node name="Polygon2D8" type="Polygon2D" parent="."]
+position = Vector2(-71.494, -72.949)
+rotation = -0.785398
+color = Color(0, 0, 0, 1)
+antialiased = true
+polygon = PackedVector2Array(-68.5728, 111.448, -5.34916, 174.672, 68.6891, 108.953, 6.29728, 39.9056)
+
 [node name="Polygon2D" type="Polygon2D" parent="."]
 position = Vector2(-71.4939, -55.5294)
 rotation = -0.785398

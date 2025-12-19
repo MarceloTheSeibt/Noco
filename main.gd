@@ -2,7 +2,9 @@ extends Node
 const circle = preload("res://circle.tscn")
 const cross = preload("res://x.tscn")
 const icon = preload("res://vecteezy_geometric-design-element_21048718.png")
-
+var turn_counter = 0
+var whos_turn_is_it = null  # De quem é a vez de jogar atualmente
+var player_turn_order = null  # Se o jogador terá turnos ímpares ou pares
 var rng = RandomNumberGenerator.new()
 
 # Buttons
@@ -14,17 +16,14 @@ var button_symbol_scale := Vector2(1,1)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var player_symbol = randomize_symbols()
-	var dicts_symbols = gen_dicts_symbols()
-	show_symbol_info(player_symbol)
-	print(player_symbol)  # Debug
-	gen_buttons_symbols(player_symbol, dicts_symbols)
+	prepare_game()
 	
 	
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if Input.is_action_just_pressed("restart_game"):  # Reinicia a partida "R"
+		prepare_game()
 
 
 func _button_symbol_pressed(slot, player_symbol, dicts_symbols):
@@ -32,10 +31,12 @@ func _button_symbol_pressed(slot, player_symbol, dicts_symbols):
 		var new_circle = circle.instantiate()
 		new_circle.set_global_position(slot.get_parent().get_parent().global_position)
 		self.add_child(new_circle)
+		new_circle.add_to_group("symbols")
 	else:
 		var new_cross = cross.instantiate()
 		new_cross.set_global_position(slot.get_parent().get_parent().global_position)
 		self.add_child(new_cross)
+		new_cross.add_to_group("symbols")
 	
 	var slot_used_string = slot.get_parent().get_parent().to_string().left(2)
 	dicts_symbols[slot_used_string] = player_symbol  # Key recebe o value do símbolo posicionado
@@ -51,6 +52,7 @@ func _button_symbol_pressed(slot, player_symbol, dicts_symbols):
 		#c += 1  # Debug
 		#print(c)  # Debug
 	rearrange_menu(button, button_parent)
+	mediate_turns()
 	print(dicts_symbols)  # Debug
 
 
@@ -202,14 +204,48 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 
 
 func rearrange_menu(button_deleted, button_parent):
-	var button_0 = get_tree().get_nodes_in_group("navigation_buttons")[0]
-	# O primeiro botão válido pega foco do cursor
-	button_0.grab_focus()
+	if get_tree().get_node_count_in_group("navigation_buttons") > 0:
+		var button_0 = get_tree().get_nodes_in_group("navigation_buttons")[0]
+		# O primeiro botão válido pega foco do cursor
+		button_0.grab_focus()
 
+	#  Troca de vizinhos quando alguma casa é ocupada, para evitar problemas de navegação com teclado
 	if button_parent == $Board/HitboxesA/A1/A1:
-		if $Board/HitboxesA/A2/A2.get_child(0) != null:
+		if $Board/HitboxesA/A2/A2.get_child(0) and $Board/HitboxesB/B1/B1.get_child(0):
 			$Board/HitboxesA/A2/A2.get_child(0).set_focus_neighbor(1, $Board/HitboxesB/B1/B1.get_child(0).get_path())
-
+	elif button_parent == $Board/HitboxesA/A2/A2:
+		if $Board/HitboxesA/A1/A1.get_child(0) and $Board/HitboxesA/A3/A3.get_child(0):
+			$Board/HitboxesA/A1/A1.get_child(0).set_focus_neighbor(3, $Board/HitboxesA/A3/A3.get_child(0).get_path())
+			$Board/HitboxesA/A3/A3.get_child(0).set_focus_neighbor(1, $Board/HitboxesA/A1/A1.get_child(0).get_path())
+	elif button_parent == $Board/HitboxesA/A3/A3:
+		if $Board/HitboxesA/A2/A2.get_child(0) and $Board/HitboxesB/B3/B3.get_child(0):
+			$Board/HitboxesA/A2/A2.get_child(0).set_focus_neighbor(3, $Board/HitboxesB/B3/B3.get_child(0).get_path())
+	elif button_parent == $Board/HitboxesB/B1/B1:
+		if $Board/HitboxesA/A1/A1.get_child(0) and $Board/HitboxesA/A3/A3.get_child(0) and $Board/HitboxesC/C1/C1.get_child(0):
+			$Board/HitboxesA/A1/A1.get_child(0).set_focus_neighbor(2, $Board/HitboxesC/C1/C1.get_child(0).get_path())
+			$Board/HitboxesC/C1/C1.get_child(0).set_focus_neighbor(0, $Board/HitboxesA/A1/A1.get_child(0).get_path())
+	elif button_parent == $Board/HitboxesB/B2/B2:
+		if $Board/HitboxesA/A2/A2.get_child(0) and $Board/HitboxesC/C2/C2.get_child(0):
+			$Board/HitboxesA/A2/A2.get_child(0).set_focus_neighbor(2, $Board/HitboxesC/C2/C2.get_child(0).get_path())
+			$Board/HitboxesC/C2/C2.get_child(0).set_focus_neighbor(0, $Board/HitboxesA/A2/A2.get_child(0).get_path())
+		if $Board/HitboxesB/B1/B1.get_child(0) and $Board/HitboxesB/B3/B3.get_child(0):
+			$Board/HitboxesB/B1/B1.get_child(0).set_focus_neighbor(3, $Board/HitboxesB/B3/B3.get_child(0).get_path())
+			$Board/HitboxesB/B3/B3.get_child(0).set_focus_neighbor(1, $Board/HitboxesB/B1/B1.get_child(0).get_path())
+	elif button_parent == $Board/HitboxesB/B3/B3:
+		if $Board/HitboxesA/A3/A3.get_child(0) and $Board/HitboxesC/C3/C3.get_child(0):
+			$Board/HitboxesA/A3/A3.get_child(0).set_focus_neighbor(2, $Board/HitboxesC/C3/C3.get_child(0).get_path())
+			$Board/HitboxesC/C3/C3.get_child(0).set_focus_neighbor(0, $Board/HitboxesA/A3/A3.get_child(0).get_path())
+	elif button_parent == $Board/HitboxesC/C1/C1:
+		if $Board/HitboxesB/B1/B1.get_child(0) and $Board/HitboxesC/C2/C2.get_child(0):
+			$Board/HitboxesC/C2/C2.get_child(0).set_focus_neighbor(1, $Board/HitboxesB/B1/B1.get_child(0).get_path())
+	elif button_parent == $Board/HitboxesC/C2/C2:
+		if $Board/HitboxesC/C1/C1.get_child(0) and $Board/HitboxesC/C3/C3.get_child(0):
+			$Board/HitboxesC/C1/C1.get_child(0).set_focus_neighbor(3, $Board/HitboxesC/C3/C3.get_child(0).get_path())
+			$Board/HitboxesC/C3/C3.get_child(0).set_focus_neighbor(1, $Board/HitboxesC/C1/C1.get_child(0).get_path())
+	elif button_parent == $Board/HitboxesC/C3/C3:
+		if $Board/HitboxesC/C2/C2.get_child(0) and $Board/HitboxesB/B3/B3.get_child(0):
+			$Board/HitboxesC/C2/C2.get_child(0).set_focus_neighbor(3, $Board/HitboxesB/B3/B3.get_child(0).get_path())
+		
 
 # Os símbolos posicionados em cada casa será armazenado em um dicionário
 func gen_dicts_symbols():
@@ -239,3 +275,66 @@ func show_symbol_info(player_symbol):
 	else:
 		$Your_symbol_is/Symbol.text = "X"
 	$Your_symbol_is.visible = true
+
+
+# Inicia ou reinicia uma partida
+func prepare_game():
+	# Reseta todas as variáveis da partida
+	turn_counter = 0
+	player_turn_order = null
+	mediate_turns()
+	
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+		button.queue_free()
+		
+	for symbol in get_tree().get_nodes_in_group("symbols"):
+		symbol.queue_free()
+		
+
+	var player_symbol = randomize_symbols()
+	var dicts_symbols = gen_dicts_symbols()
+	show_symbol_info(player_symbol)
+	print(player_symbol)  # Debug
+	gen_buttons_symbols(player_symbol, dicts_symbols)
+	
+	
+# Função que cuida da mecânica de turnos
+func mediate_turns():
+	turn_counter += 1
+	#print(turn_counter, "turn_counter")
+	# Escolhe de maneira aleatória a ordem de quem joga e faz alternância de turnos
+	if player_turn_order == null:  # prepare_game() reseta essa variável
+		player_turn_order = rng.randi_range(1,2)  # Jogará primeiro se 1 e jogará em turnos ímpares
+	if player_turn_order == 1:
+		if turn_counter % 2 != 0:  # Se ímpar
+			whos_turn_is_it = $Player
+			$Player.player_turns = 1
+			$Player.is_player_turn = true
+			$CPU.cpu_turns = 2
+			$CPU.is_cpu_turn = false
+			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
+		else:  # Se par
+			whos_turn_is_it = $CPU
+			$Player.player_turns = 2
+			$Player.is_player_turn = false
+			$CPU.cpu_turns = 1
+			$CPU.is_cpu_turn = true
+			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
+	else:  # Se player_turn_order == 2
+		if turn_counter % 2 != 0:  # Se ímpar
+			whos_turn_is_it = $CPU
+			$CPU.cpu_turns = 1
+			$CPU.is_cpu_turn = true
+			$Player.player_turns = 2
+			$Player.is_player_turn = false
+			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
+		else:  # Se par
+			whos_turn_is_it = $Player
+			$CPU.cpu_turns = 2
+			$CPU.is_cpu_turn = false
+			$Player.player_turns = 1
+			$Player.is_player_turn = true
+			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
+	print(player_turn_order)
+	$Whos_turn_is_it.visible = true
+	
