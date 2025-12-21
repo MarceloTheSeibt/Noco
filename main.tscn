@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://ckevgdcvbvypk"]
+[gd_scene load_steps=10 format=3 uid="uid://ckevgdcvbvypk"]
 
 [ext_resource type="PackedScene" uid="uid://c3mbqdabaqhs3" path="res://board_empty.tscn" id="1_uav21"]
-[ext_resource type="Script" path="res://main.gd" id="1_yl4p8"]
-[ext_resource type="Script" path="res://board_empty.gd" id="3_pgj42"]
+[ext_resource type="Script" uid="uid://c32sd6okhutal" path="res://main.gd" id="1_yl4p8"]
+[ext_resource type="Script" uid="uid://drdqf123l7gu2" path="res://board_empty.gd" id="3_pgj42"]
 [ext_resource type="PackedScene" uid="uid://wuy1mq7sw2gg" path="res://your_symbol_is.tscn" id="4_8fhff"]
 [ext_resource type="PackedScene" uid="uid://ct00emr2s7yrl" path="res://whos_turn_is_it.tscn" id="4_53npt"]
 [ext_resource type="PackedScene" uid="uid://brgso0tm6ba1e" path="res://player.tscn" id="5_bifxw"]
 [ext_resource type="PackedScene" uid="uid://cuptktd8gcc7f" path="res://cpu.tscn" id="6_os040"]
-[ext_resource type="Script" path="res://cpu.gd" id="8_1w4op"]
+[ext_resource type="Script" uid="uid://dsumufao7h8xr" path="res://cpu.gd" id="8_1w4op"]
+[ext_resource type="PackedScene" uid="uid://cjegtjai8aiiu" path="res://cpu_thinking_message.tscn" id="9_kek77"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_yl4p8")
@@ -23,7 +24,6 @@ color = Color(0, 0, 0, 1)
 script = ExtResource("3_pgj42")
 
 [node name="Whos_turn_is_it" parent="." instance=ExtResource("4_53npt")]
-visible = false
 
 [node name="Your_symbol_is" parent="." instance=ExtResource("4_8fhff")]
 visible = false
@@ -32,3 +32,6 @@ visible = false
 
 [node name="CPU" parent="." instance=ExtResource("6_os040")]
 script = ExtResource("8_1w4op")
+
+[node name="Cpu_thinking_message" parent="." instance=ExtResource("9_kek77")]
+visible = false

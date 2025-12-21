@@ -3,6 +3,7 @@ extends Node2D
 var score := 0
 var is_player_turn := false
 var player_turns: int  # Par ou ímpar (1 ou 2)
+var symbol_attached = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

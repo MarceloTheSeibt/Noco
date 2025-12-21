@@ -5,7 +5,11 @@ const icon = preload("res://vecteezy_geometric-design-element_21048718.png")
 var turn_counter = 0
 var whos_turn_is_it = null  # De quem é a vez de jogar atualmente
 var player_turn_order = null  # Se o jogador terá turnos ímpares ou pares
+var player_symbol = null 
+var cpu_symbol = null
+var symbols_attached = null  # [0] = player [1] = CPU
 var rng = RandomNumberGenerator.new()
+var dicts_symbols 
 
 # Buttons
 var offset_button_x := 30
@@ -24,10 +28,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("restart_game"):  # Reinicia a partida "R"
 		prepare_game()
+	print(dicts_symbols)
 
 
-func _button_symbol_pressed(slot, player_symbol, dicts_symbols):
-	if player_symbol == "Circle":
+func _button_symbol_pressed(slot, current_player_symbol):
+
+	if current_player_symbol == "Circle":
 		var new_circle = circle.instantiate()
 		new_circle.set_global_position(slot.get_parent().get_parent().global_position)
 		self.add_child(new_circle)
@@ -39,7 +45,7 @@ func _button_symbol_pressed(slot, player_symbol, dicts_symbols):
 		new_cross.add_to_group("symbols")
 	
 	var slot_used_string = slot.get_parent().get_parent().to_string().left(2)
-	dicts_symbols[slot_used_string] = player_symbol  # Key recebe o value do símbolo posicionado
+	dicts_symbols[slot_used_string] = current_player_symbol  # Key recebe o value do símbolo posicionado
 	
 	var button = slot  # Variável para função rearrange_menu
 	var button_parent = slot.get_parent()
@@ -53,13 +59,14 @@ func _button_symbol_pressed(slot, player_symbol, dicts_symbols):
 		#print(c)  # Debug
 	rearrange_menu(button, button_parent)
 	mediate_turns()
-	print(dicts_symbols)  # Debug
+	print("player= ", player_symbol)  # Debug
+	print("cpu= ", cpu_symbol)  # Debug
 
 
 # Gera os botões que permitem posicionar os símbolos
-func gen_buttons_symbols(player_symbol, dicts_symbols):
+func gen_buttons_symbols(symbols_attached, dicts_symbols):
 	var button_symbol_text := ""
-	if player_symbol == "Circle":
+	if symbols_attached[0] == "Circle":
 		button_symbol_text = "Posicionar ○ aqui"
 	else:
 		button_symbol_text = "Posicionar X aqui"
@@ -71,8 +78,8 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_a1.position = button_a1.position - button_a1.size / 2
 	button_a1.position.x = button_a1.position.x + offset_button_x
 	button_a1.position.y = button_a1.position.y + offset_button_y
-	button_a1.pressed.connect(_button_symbol_pressed.bind(button_a1, player_symbol, dicts_symbols))
-	
+	button_a1.pressed.connect(_button_symbol_pressed.bind(button_a1, symbols_attached[0]))
+
 	var button_a2 = Button.new()
 	button_a2.text = button_symbol_text
 	button_a2.scale = button_symbol_scale
@@ -80,7 +87,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_a2.position = button_a2.position - button_a2.size / 2
 	button_a2.position.x = button_a2.position.x + offset_button_x
 	button_a2.position.y = button_a2.position.y + offset_button_y
-	button_a2.pressed.connect(_button_symbol_pressed.bind(button_a2, player_symbol, dicts_symbols))
+	button_a2.pressed.connect(_button_symbol_pressed.bind(button_a2, symbols_attached[0]))
 	
 	var button_a3 = Button.new()
 	button_a3.text = button_symbol_text
@@ -89,7 +96,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_a3.position = button_a3.position - button_a3.size / 2
 	button_a3.position.x = button_a3.position.x + offset_button_x
 	button_a3.position.y = button_a3.position.y + offset_button_y
-	button_a3.pressed.connect(_button_symbol_pressed.bind(button_a3, player_symbol, dicts_symbols))
+	button_a3.pressed.connect(_button_symbol_pressed.bind(button_a3, symbols_attached[0]))
 
 	var button_b1 = Button.new()
 	button_b1.text = button_symbol_text
@@ -98,7 +105,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_b1.position = button_b1.position - button_b1.size / 2
 	button_b1.position.x = button_b1.position.x + offset_button_x
 	button_b1.position.y = button_b1.position.y + offset_button_y
-	button_b1.pressed.connect(_button_symbol_pressed.bind(button_b1, player_symbol, dicts_symbols))
+	button_b1.pressed.connect(_button_symbol_pressed.bind(button_b1, symbols_attached[0]))
 	
 	var button_b2 = Button.new()
 	button_b2.text = button_symbol_text
@@ -107,7 +114,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_b2.position = button_b2.position - button_b2.size / 2
 	button_b2.position.x = button_b2.position.x + offset_button_x
 	button_b2.position.y = button_b2.position.y + offset_button_y
-	button_b2.pressed.connect(_button_symbol_pressed.bind(button_b2, player_symbol, dicts_symbols))
+	button_b2.pressed.connect(_button_symbol_pressed.bind(button_b2, symbols_attached[0]))
 
 	var button_b3 = Button.new()
 	button_b3.text = button_symbol_text
@@ -116,7 +123,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_b3.position = button_b3.position - button_b3.size / 2
 	button_b3.position.x = button_b3.position.x + offset_button_x
 	button_b3.position.y = button_b3.position.y + offset_button_y
-	button_b3.pressed.connect(_button_symbol_pressed.bind(button_b3, player_symbol, dicts_symbols))
+	button_b3.pressed.connect(_button_symbol_pressed.bind(button_b3, symbols_attached[0]))
 	
 	var button_c1 = Button.new()
 	button_c1.text = button_symbol_text
@@ -125,7 +132,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_c1.position = button_c1.position - button_c1.size / 2
 	button_c1.position.x = button_c1.position.x + offset_button_x
 	button_c1.position.y = button_c1.position.y + offset_button_y
-	button_c1.pressed.connect(_button_symbol_pressed.bind(button_c1, player_symbol, dicts_symbols))
+	button_c1.pressed.connect(_button_symbol_pressed.bind(button_c1, symbols_attached[0]))
 	
 	var button_c2 = Button.new()
 	button_c2.text = button_symbol_text
@@ -134,7 +141,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_c2.position = button_c2.position - button_c2.size / 2
 	button_c2.position.x = button_c2.position.x + offset_button_x
 	button_c2.position.y = button_c2.position.y + offset_button_y
-	button_c2.pressed.connect(_button_symbol_pressed.bind(button_c2, player_symbol, dicts_symbols))
+	button_c2.pressed.connect(_button_symbol_pressed.bind(button_c2, symbols_attached[0]))
 	
 	var button_c3 = Button.new()
 	button_c3.text = button_symbol_text
@@ -143,7 +150,7 @@ func gen_buttons_symbols(player_symbol, dicts_symbols):
 	button_c3.position = button_c3.position - button_c3.size / 2
 	button_c3.position.x = button_c3.position.x + offset_button_x
 	button_c3.position.y = button_c3.position.y + offset_button_y
-	button_c3.pressed.connect(_button_symbol_pressed.bind(button_c3, player_symbol, dicts_symbols))
+	button_c3.pressed.connect(_button_symbol_pressed.bind(button_c3, symbols_attached[0]))
 
 	# Botões ficarão no grupo para melhor organização
 	button_a1.add_to_group("navigation_buttons")
@@ -249,31 +256,37 @@ func rearrange_menu(button_deleted, button_parent):
 
 # Os símbolos posicionados em cada casa será armazenado em um dicionário
 func gen_dicts_symbols():
-	var dict_symbols = {"A1": null, "A2": null, "A3": null,
-						"B1": null, "B2": null, "B3": null, 
-						"C1": null, "C2": null, "C3": null
-						}
-	return dict_symbols
+	dicts_symbols = {"A1": null, "A2": null, "A3": null,
+					"B1": null, "B2": null, "B3": null, 
+					"C1": null, "C2": null, "C3": null
+					}
+	return dicts_symbols
 
 
 # Escolhe de maneira aleatória qual símbolo do player e do cpu
 func randomize_symbols():
 	var rng_symbol = rng.randi_range(0,1)
-	var p1_symbol = null
 	
 	if rng_symbol == 0:
-		p1_symbol = "Circle"
+		player_symbol = "Circle"
+		cpu_symbol = "Cross"
+		
 	else:
-		p1_symbol = "Cross"
-	return p1_symbol
+		player_symbol = "Cross"
+		cpu_symbol = "Circle"
+	return [player_symbol, cpu_symbol]
 	
 	
 # Informa ao jogador qual seu símbolo nessa partida
 func show_symbol_info(player_symbol):
 	if player_symbol == "Circle":
 		$Your_symbol_is/Symbol.text = "○"
+		$Player.symbol_attached = "Circle"
+		$CPU.symbol_attached = "Cross"
 	else:
 		$Your_symbol_is/Symbol.text = "X"
+		$Player.symbol_attached = "Cross"
+		$CPU.symbol_attached = "Circle"
 	$Your_symbol_is.visible = true
 
 
@@ -291,11 +304,11 @@ func prepare_game():
 		symbol.queue_free()
 		
 
-	var player_symbol = randomize_symbols()
+	symbols_attached = randomize_symbols()  # De quem é cada símbolo
 	var dicts_symbols = gen_dicts_symbols()
 	show_symbol_info(player_symbol)
-	print(player_symbol)  # Debug
-	gen_buttons_symbols(player_symbol, dicts_symbols)
+	#print(player_symbol)  # Debug
+	gen_buttons_symbols(symbols_attached, dicts_symbols)
 	
 	
 # Função que cuida da mecânica de turnos
@@ -320,6 +333,7 @@ func mediate_turns():
 			$CPU.cpu_turns = 1
 			$CPU.is_cpu_turn = true
 			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
+			$CPU.cpu_place_symbol()
 	else:  # Se player_turn_order == 2
 		if turn_counter % 2 != 0:  # Se ímpar
 			whos_turn_is_it = $CPU
@@ -328,6 +342,8 @@ func mediate_turns():
 			$Player.player_turns = 2
 			$Player.is_player_turn = false
 			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
+			$CPU.cpu_place_symbol()
+
 		else:  # Se par
 			whos_turn_is_it = $Player
 			$CPU.cpu_turns = 2
@@ -335,6 +351,6 @@ func mediate_turns():
 			$Player.player_turns = 1
 			$Player.is_player_turn = true
 			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
-	print(player_turn_order)
+	print("turn_order= ",player_turn_order)
 	$Whos_turn_is_it.visible = true
 	
