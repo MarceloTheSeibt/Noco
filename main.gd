@@ -1,4 +1,7 @@
 extends Node
+
+@export var menu_principal: PackedScene
+
 const circle = preload("res://circle.tscn")
 const cross = preload("res://x.tscn")
 const icon = preload("res://vecteezy_geometric-design-element_21048718.png")
@@ -9,7 +12,14 @@ var player_symbol = null
 var cpu_symbol = null
 var symbols_attached = null  # [0] = player [1] = CPU
 var rng = RandomNumberGenerator.new()
-var dicts_symbols 
+var dicts_symbols = {"A1": null, "A2": null, "A3": null,
+					"B1": null, "B2": null, "B3": null, 
+					"C1": null, "C2": null, "C3": null
+					}
+var game_ended = false
+var winner = null
+var winner_symbol = null
+var new_menu
 
 # Buttons
 var offset_button_x := 30
@@ -20,15 +30,19 @@ var button_symbol_scale := Vector2(1,1)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	prepare_game()
-	
+	go_to_menu()
 	
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("restart_game"):  # Reinicia a partida "R"
-		prepare_game()
-	print(dicts_symbols)
+		if not new_menu:
+			prepare_game()
+			print("Partida Reiniciada")
+	elif Input.is_action_just_pressed("main_menu"):
+		if not new_menu:
+			go_to_menu()
+	#print(dicts_symbols)
 
 
 func _button_symbol_pressed(slot, current_player_symbol):
@@ -57,10 +71,11 @@ func _button_symbol_pressed(slot, current_player_symbol):
 		await get_tree().process_frame
 		#c += 1  # Debug
 		#print(c)  # Debug
+	check_game_end()
 	rearrange_menu(button, button_parent)
 	mediate_turns()
-	print("player= ", player_symbol)  # Debug
-	print("cpu= ", cpu_symbol)  # Debug
+	#print("player= ", player_symbol)  # Debug
+	#print("cpu= ", cpu_symbol)  # Debug
 
 
 # Gera os botões que permitem posicionar os símbolos
@@ -255,6 +270,7 @@ func rearrange_menu(button_deleted, button_parent):
 		
 
 # Os símbolos posicionados em cada casa será armazenado em um dicionário
+# Essa func só reseta a variável
 func gen_dicts_symbols():
 	dicts_symbols = {"A1": null, "A2": null, "A3": null,
 					"B1": null, "B2": null, "B3": null, 
@@ -293,9 +309,17 @@ func show_symbol_info(player_symbol):
 # Inicia ou reinicia uma partida
 func prepare_game():
 	# Reseta todas as variáveis da partida
+	winner = null
+	winner_symbol = null
+	game_ended = false
 	turn_counter = 0
 	player_turn_order = null
 	mediate_turns()
+	
+	$Board.visible = true
+	$Whos_turn_is_it.visible = true
+	$Your_symbol_is.visible = true
+	$Show_winner.visible = false
 	
 	for button in get_tree().get_nodes_in_group("navigation_buttons"):
 		button.queue_free()
@@ -313,44 +337,133 @@ func prepare_game():
 	
 # Função que cuida da mecânica de turnos
 func mediate_turns():
-	turn_counter += 1
-	#print(turn_counter, "turn_counter")
-	# Escolhe de maneira aleatória a ordem de quem joga e faz alternância de turnos
-	if player_turn_order == null:  # prepare_game() reseta essa variável
-		player_turn_order = rng.randi_range(1,2)  # Jogará primeiro se 1 e jogará em turnos ímpares
-	if player_turn_order == 1:
-		if turn_counter % 2 != 0:  # Se ímpar
-			whos_turn_is_it = $Player
-			$Player.player_turns = 1
-			$Player.is_player_turn = true
-			$CPU.cpu_turns = 2
-			$CPU.is_cpu_turn = false
-			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
-		else:  # Se par
-			whos_turn_is_it = $CPU
-			$Player.player_turns = 2
-			$Player.is_player_turn = false
-			$CPU.cpu_turns = 1
-			$CPU.is_cpu_turn = true
-			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
-			$CPU.cpu_place_symbol()
-	else:  # Se player_turn_order == 2
-		if turn_counter % 2 != 0:  # Se ímpar
-			whos_turn_is_it = $CPU
-			$CPU.cpu_turns = 1
-			$CPU.is_cpu_turn = true
-			$Player.player_turns = 2
-			$Player.is_player_turn = false
-			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
-			$CPU.cpu_place_symbol()
+	if not game_ended:
+		turn_counter += 1
+		#print(turn_counter, "turn_counter")
+		# Escolhe de maneira aleatória a ordem de quem joga e faz alternância de turnos
+		if player_turn_order == null:  # prepare_game() reseta essa variável
+			player_turn_order = rng.randi_range(1,2)  # Jogará primeiro se 1 e jogará em turnos ímpares
+			#player_turn_order = 2 # DEBUG, REMOVER
+		if player_turn_order == 1:
+			if turn_counter % 2 != 0:  # Se ímpar
+				whos_turn_is_it = $Player
+				$Player.player_turns = 1
+				$Player.is_player_turn = true
+				$CPU.cpu_turns = 2
+				$CPU.is_cpu_turn = false
+				$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
+			else:  # Se par
+				whos_turn_is_it = $CPU
+				$Player.player_turns = 2
+				$Player.is_player_turn = false
+				$CPU.cpu_turns = 1
+				$CPU.is_cpu_turn = true
+				$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
+				$CPU.cpu_place_symbol()
+		else:  # Se player_turn_order == 2
+			if turn_counter % 2 != 0:  # Se ímpar
+				whos_turn_is_it = $CPU
+				$CPU.cpu_turns = 1
+				$CPU.is_cpu_turn = true
+				$Player.player_turns = 2
+				$Player.is_player_turn = false
+				$Whos_turn_is_it/Player_or_CPU.text = "[center][u]CPU[/u]"
+				$CPU.cpu_place_symbol()
 
-		else:  # Se par
-			whos_turn_is_it = $Player
-			$CPU.cpu_turns = 2
-			$CPU.is_cpu_turn = false
-			$Player.player_turns = 1
-			$Player.is_player_turn = true
-			$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
-	print("turn_order= ",player_turn_order)
-	$Whos_turn_is_it.visible = true
+			else:  # Se par
+				whos_turn_is_it = $Player
+				$CPU.cpu_turns = 2
+				$CPU.is_cpu_turn = false
+				$Player.player_turns = 1
+				$Player.is_player_turn = true
+				$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
+		#print("turn_order= ",player_turn_order)
+		$Whos_turn_is_it.visible = true
+	else:
+		game_end_screen()
+		print("Acabou a partida")
+
+# A cada jogada, checa se deu fim de jogo e o vencedor
+func check_game_end():
+	
+	
+	if not game_ended:
+		if dicts_symbols["A1"] and dicts_symbols["A2"] and dicts_symbols["A3"]:
+			if dicts_symbols["A1"] == dicts_symbols["A2"] and dicts_symbols["A2"] == dicts_symbols["A3"]:
+				winner_symbol = dicts_symbols["A1"]
+				game_ended = true
+
+		if dicts_symbols["A1"] and dicts_symbols["B1"] and dicts_symbols["C1"]:
+			if dicts_symbols["A1"] == dicts_symbols["B1"] and dicts_symbols["B1"] == dicts_symbols["C1"]:
+				winner_symbol = dicts_symbols["A1"]
+				game_ended = true
+
+		if dicts_symbols["A1"] and dicts_symbols["B2"] and dicts_symbols["C3"]:
+			if dicts_symbols["A1"] == dicts_symbols["B2"] and dicts_symbols["B2"] == dicts_symbols["C3"]:
+				winner_symbol = dicts_symbols["A1"]
+				game_ended = true
+
+		if dicts_symbols["A2"] and dicts_symbols["B2"] and dicts_symbols["C2"]:
+			if dicts_symbols["A2"] == dicts_symbols["B2"] and dicts_symbols["B2"] == dicts_symbols["C2"]:
+				winner_symbol = dicts_symbols["A2"]
+				game_ended = true
+
+		if dicts_symbols["A3"] and dicts_symbols["B3"] and dicts_symbols["C3"]:
+			if dicts_symbols["A3"] == dicts_symbols["B3"] and dicts_symbols["B3"] == dicts_symbols["C3"]:
+				winner_symbol = dicts_symbols["A3"]
+				game_ended = true
+
+		if dicts_symbols["A3"] and dicts_symbols["B2"] and dicts_symbols["C1"]:
+			if dicts_symbols["A3"] == dicts_symbols["B2"] and dicts_symbols["B2"] == dicts_symbols["C1"]:
+				winner_symbol = dicts_symbols["A3"]
+				game_ended = true
+
+		if dicts_symbols["B1"] and dicts_symbols["B2"] and dicts_symbols["B3"]:
+			if dicts_symbols["B1"] == dicts_symbols["B2"] and dicts_symbols["B2"] == dicts_symbols["B3"]:
+				winner_symbol = dicts_symbols["B1"]
+				game_ended = true
+
+		if dicts_symbols["C1"] and dicts_symbols["C2"] and dicts_symbols["C3"]:
+			if dicts_symbols["C1"] == dicts_symbols["C2"] and dicts_symbols["C2"] == dicts_symbols["C3"]:
+				winner_symbol = dicts_symbols["C1"]
+				game_ended = true
+
+		if get_tree().get_node_count_in_group("navigation_buttons") == 0:
+			game_ended = true
+			winner_symbol = "Draw"  # Em caso de empate
+	if game_ended:
+		if winner_symbol == player_symbol:
+			winner = $Player
+			$Player.score += 1
+		elif winner_symbol != player_symbol:
+			winner = $CPU
+			$CPU.score += 1
+		else:
+			winner = "Draw"
+		print("Vencedor: ", winner)
+
+
+func go_to_menu():
+	new_menu = menu_principal.instantiate()
+	self.add_child(new_menu)
+	$Board.visible = false
+	$Whos_turn_is_it.visible = false
+	$Your_symbol_is.visible = false
+	$Cpu_thinking_message.visible = false
+	$Show_winner.visible = false
+
+
+# Chamada logo após a última jogada da partida
+func game_end_screen():
+	if get_tree().get_node_count_in_group("navigation_buttons") > 0:
+		for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = true
+
+	$Show_winner.visible = true
+	if winner == $Player:
+		$Show_winner/Winner_name.text = "[center]Vencedor: [u]Jogador 1[/u]"
+	elif winner == $CPU:
+		$Show_winner/Winner_name.text = "[center]Vencedor: [u]CPU[/u]"
+	elif winner == "Draw":
+		$Show_winner/Winner_name.text = "[center][u]Empate![/u]"
 	

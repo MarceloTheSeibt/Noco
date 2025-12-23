@@ -25,7 +25,7 @@ func cpu_place_symbol():
 	while slot_count == 0:
 		slot_count = get_tree().get_node_count_in_group("navigation_buttons")
 		await get_tree().process_frame
-		print("0")
+		#print("0")
 	
 	$Thinking.start()
 	main_node.get_node("Cpu_thinking_message").visible = true
@@ -43,10 +43,7 @@ func cpu_place_symbol():
 			place_in_slot = slot  # É a casa escolhida para inserir o símbolo
 			break
 		counter += 1
-	print(place_in_slot, chosen_slot_index)
+	#print(place_in_slot, chosen_slot_index)
 	#print(main_node)
-
-	#if not place_in_slot.is_connected("pressed", Callable(main_node, "_button_symbol_pressed")):
-		#place_in_slot.pressed.connect(main_node._button_symbol_pressed.bind(place_in_slot, symbol_attached))
 	main_node._button_symbol_pressed(place_in_slot, symbol_attached)
 	print("CPU Played")
