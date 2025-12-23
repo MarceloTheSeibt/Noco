@@ -1,0 +1,148 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7deqx20xoe7r"]
+
+[ext_resource type="FontFile" uid="uid://cjl3kplucq40t" path="res://Fonts/AtkinsonHyperlegibleBold102.ttf" id="1_06t4h"]
+[ext_resource type="Script" uid="uid://dqi72br8va851" path="res://main_menu.gd" id="1_7vrkn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7vrkn"]
+size = Vector2(1152, 648)
+
+[node name="Main_menu" type="Area2D"]
+script = ExtResource("1_7vrkn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(576, 324)
+shape = SubResource("RectangleShape2D_7vrkn")
+debug_color = Color(0, 0, 0, 0.41960785)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/CenterContainer"]
+layout_mode = 2
+
+[node name="White" type="ColorRect" parent="CanvasLayer/CenterContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -112.5
+offset_top = -81.0
+offset_right = 112.5
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4.905, 3.605)
+pivot_offset = Vector2(112.5, 81)
+size_flags_horizontal = 4
+
+[node name="Black" type="ColorRect" parent="CanvasLayer/CenterContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -112.5
+offset_top = -81.0
+offset_right = 112.5
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4.87, 3.565)
+pivot_offset = Vector2(112.5, 81)
+size_flags_horizontal = 4
+color = Color(0, 0, 0, 1)
+
+[node name="Menu_principal" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -225.76
+offset_bottom = -225.76001
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menu_Principal" type="RichTextLabel" parent="CanvasLayer/Menu_principal"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("1_06t4h")
+theme_override_font_sizes/normal_font_size = 61
+bbcode_enabled = true
+text = "[center]Menu Principal"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Novo_jogo" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -36.315
+offset_bottom = -36.315002
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Novo_jogo" type="Button" parent="CanvasLayer/Novo_jogo" groups=["menu_buttons"]]
+layout_mode = 2
+focus_neighbor_top = NodePath("../../Como_jogar/Como_jogar")
+focus_neighbor_bottom = NodePath("../../Como_jogar/Como_jogar")
+focus_next = NodePath("../../Como_jogar/Como_jogar")
+focus_previous = NodePath("../../Como_jogar/Como_jogar")
+theme_override_colors/font_focus_color = Color(0.95, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.95, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 0)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 0)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 0)
+theme_override_colors/icon_hover_color = Color(0, 0, 0, 0)
+theme_override_colors/icon_hover_pressed_color = Color(0, 0, 0, 0)
+theme_override_fonts/font = ExtResource("1_06t4h")
+theme_override_font_sizes/font_size = 48
+text = "Novo Jogo"
+
+[node name="Como_jogar" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 91.6
+offset_right = -1142.0
+offset_bottom = -546.4
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Como_jogar" type="Button" parent="CanvasLayer/Como_jogar" groups=["menu_buttons"]]
+layout_mode = 0
+offset_left = 436.0
+offset_top = 294.0
+offset_right = 716.0
+offset_bottom = 354.0
+focus_neighbor_top = NodePath("../../Novo_jogo/Novo_jogo")
+focus_neighbor_bottom = NodePath("../../Novo_jogo/Novo_jogo")
+focus_next = NodePath("../../Novo_jogo/Novo_jogo")
+focus_previous = NodePath("../../Novo_jogo/Novo_jogo")
+theme_override_colors/font_focus_color = Color(0.95, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.95, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 0)
+theme_override_fonts/font = ExtResource("1_06t4h")
+theme_override_font_sizes/font_size = 48
+text = "Como Jogar"
+
+[connection signal="mouse_entered" from="CanvasLayer/Novo_jogo/Novo_jogo" to="." method="_on_novo_jogo_mouse_entered"]
+[connection signal="pressed" from="CanvasLayer/Novo_jogo/Novo_jogo" to="." method="_on_novo_jogo_pressed"]
+[connection signal="mouse_entered" from="CanvasLayer/Como_jogar/Como_jogar" to="." method="_on_como_jogar_mouse_entered"]
