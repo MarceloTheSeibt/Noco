@@ -1,6 +1,8 @@
 extends Node
 
 @export var menu_principal: PackedScene
+@export var como_jogar: PackedScene
+
 
 const circle = preload("res://circle.tscn")
 const cross = preload("res://x.tscn")
@@ -17,9 +19,13 @@ var dicts_symbols = {"A1": null, "A2": null, "A3": null,
 					"C1": null, "C2": null, "C3": null
 					}
 var game_ended = false
+var game_restarted = false
 var winner = null
 var winner_symbol = null
 var new_menu
+var new_how_to_play
+var game_just_started = true
+var last_slot = null
 
 # Buttons
 var offset_button_x := 30
@@ -27,22 +33,45 @@ var offset_button_y := 75
 var button_symbol_scale := Vector2(1,1)
 #---------------------------------------#
 
+# Audio
+var audios_finished = 0  # Controle para intercalação entre áudio e ação no jogo
+var control = true  # Controle para o áudio reproduzido no primeiro turno
+@onready var e_a_vez_do: Object = $Audio/E_a_vez_do
+@onready var j1_circle: Object = $Audio/Jogador_1_circulo
+@onready var j1_x: Object = $Audio/Jogador_1_x
+@onready var j1: Object = $Audio/Jogador_1
+@onready var cpu: Object = $Audio/Cpu
+@onready var posicionou_na_casa: Object = $Audio/Posicionou_na_casa
+#---------------------------------------#
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	#$CPU.audio_casa_finished.connect(_on_casa_finished)
 	go_to_menu()
 	
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("restart_game"):  # Reinicia a partida "R"
-		if not new_menu:
-			prepare_game()
-			print("Partida Reiniciada")
+		if not new_menu and not new_how_to_play:
+			for button in get_tree().get_nodes_in_group("navigation_buttons"):
+				if not button.disabled:
+					game_restarted = true
+					prepare_game()
+					print("Partida Reiniciada")
 	elif Input.is_action_just_pressed("main_menu"):
 		if not new_menu:
 			go_to_menu()
-	#print(dicts_symbols)
+			
+			if new_how_to_play:  # Se estiver na tela "Como Jogar", deleta a mesma
+				new_how_to_play.queue_free()
+	
+	# Para pegar o valor $Player.last_slot_used somente quando ele mudar de valor
+	if not game_ended:
+		if last_slot != $Player.last_slot_used:
+			print(last_slot, $Player.last_slot_used)
+			last_slot = $Player.last_slot_used
+
+
 
 
 func _button_symbol_pressed(slot, current_player_symbol):
@@ -61,6 +90,11 @@ func _button_symbol_pressed(slot, current_player_symbol):
 	var slot_used_string = slot.get_parent().get_parent().to_string().left(2)
 	dicts_symbols[slot_used_string] = current_player_symbol  # Key recebe o value do símbolo posicionado
 	
+	if current_player_symbol == $Player.symbol_attached:
+		$Player.last_slot_used = slot_used_string
+	if current_player_symbol == $CPU.symbol_attached:
+		$CPU.last_slot_used = slot_used_string
+	#print("current_player_symbol ", current_player_symbol, $CPU.symbol_attached, slot_used_string, $CPU.last_slot_used)
 	var button = slot  # Variável para função rearrange_menu
 	var button_parent = slot.get_parent()
 	
@@ -73,6 +107,7 @@ func _button_symbol_pressed(slot, current_player_symbol):
 		#print(c)  # Debug
 	check_game_end()
 	rearrange_menu(button, button_parent)
+	
 	mediate_turns()
 	#print("player= ", player_symbol)  # Debug
 	#print("cpu= ", cpu_symbol)  # Debug
@@ -223,7 +258,13 @@ func gen_buttons_symbols(symbols_attached, dicts_symbols):
 	
 	button_c3.set_focus_neighbor(0, button_b3.get_path())
 	button_c3.set_focus_neighbor(1, button_c2.get_path())
-
+	
+	if game_restarted:
+		$Audio/Partida_reiniciada.play()
+	else:
+		$Audio/Inicio_partida.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = true
 
 func rearrange_menu(button_deleted, button_parent):
 	if get_tree().get_node_count_in_group("navigation_buttons") > 0:
@@ -286,10 +327,11 @@ func randomize_symbols():
 	if rng_symbol == 0:
 		player_symbol = "Circle"
 		cpu_symbol = "Cross"
-		
+
 	else:
 		player_symbol = "Cross"
 		cpu_symbol = "Circle"
+	
 	return [player_symbol, cpu_symbol]
 	
 	
@@ -309,6 +351,10 @@ func show_symbol_info(player_symbol):
 # Inicia ou reinicia uma partida
 func prepare_game():
 	# Reseta todas as variáveis da partida
+	
+	control = true
+	audios_finished = 0
+	game_just_started = true
 	winner = null
 	winner_symbol = null
 	game_ended = false
@@ -320,6 +366,7 @@ func prepare_game():
 	$Whos_turn_is_it.visible = true
 	$Your_symbol_is.visible = true
 	$Show_winner.visible = false
+	$Keybind_info.visible = true
 	
 	for button in get_tree().get_nodes_in_group("navigation_buttons"):
 		button.queue_free()
@@ -329,8 +376,9 @@ func prepare_game():
 		
 
 	symbols_attached = randomize_symbols()  # De quem é cada símbolo
-	var dicts_symbols = gen_dicts_symbols()
 	show_symbol_info(player_symbol)
+	var dicts_symbols = gen_dicts_symbols()
+	
 	#print(player_symbol)  # Debug
 	gen_buttons_symbols(symbols_attached, dicts_symbols)
 	
@@ -338,21 +386,46 @@ func prepare_game():
 # Função que cuida da mecânica de turnos
 func mediate_turns():
 	if not game_ended:
+		for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = true
 		turn_counter += 1
 		#print(turn_counter, "turn_counter")
 		# Escolhe de maneira aleatória a ordem de quem joga e faz alternância de turnos
 		if player_turn_order == null:  # prepare_game() reseta essa variável
 			player_turn_order = rng.randi_range(1,2)  # Jogará primeiro se 1 e jogará em turnos ímpares
-			#player_turn_order = 2 # DEBUG, REMOVER
+			
 		if player_turn_order == 1:
 			if turn_counter % 2 != 0:  # Se ímpar
+				if turn_counter > 1:
+					posicionou_na_casa.play()
+					await posicionou_na_casa.finished
+					for child in $Audio.get_children():
+						var child_string = child.name
+						if not $CPU.last_slot_used:
+							await get_tree().process_frame
+						if child_string == $CPU.last_slot_used:
+							child.play()
+							await child.finished
+						
 				whos_turn_is_it = $Player
 				$Player.player_turns = 1
 				$Player.is_player_turn = true
 				$CPU.cpu_turns = 2
 				$CPU.is_cpu_turn = false
 				$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
+				
 			else:  # Se par
+				if turn_counter > 1:
+					posicionou_na_casa.play()
+					await posicionou_na_casa.finished
+					for child in $Audio.get_children():
+						var child_string = child.name
+						if not $Player.last_slot_used:
+							await get_tree().process_frame
+						if child_string == $Player.last_slot_used:
+							child.play()
+							await child.finished
+						
 				whos_turn_is_it = $CPU
 				$Player.player_turns = 2
 				$Player.is_player_turn = false
@@ -362,6 +435,17 @@ func mediate_turns():
 				$CPU.cpu_place_symbol()
 		else:  # Se player_turn_order == 2
 			if turn_counter % 2 != 0:  # Se ímpar
+				if turn_counter > 1:
+					posicionou_na_casa.play()
+					await posicionou_na_casa.finished
+					for child in $Audio.get_children():
+						var child_string = child.name
+						if not $Player.last_slot_used:
+							await get_tree().process_frame
+						if child_string == $Player.last_slot_used:
+							child.play()
+							await child.finished
+						
 				whos_turn_is_it = $CPU
 				$CPU.cpu_turns = 1
 				$CPU.is_cpu_turn = true
@@ -371,6 +455,17 @@ func mediate_turns():
 				$CPU.cpu_place_symbol()
 
 			else:  # Se par
+				if turn_counter > 1:
+					posicionou_na_casa.play()
+					await posicionou_na_casa.finished
+					for child in $Audio.get_children():
+						var child_string = child.name
+						if not $CPU.last_slot_used:
+							await get_tree().process_frame
+						if child_string == $CPU.last_slot_used:
+							child.play()
+							await child.finished
+						
 				whos_turn_is_it = $Player
 				$CPU.cpu_turns = 2
 				$CPU.is_cpu_turn = false
@@ -379,6 +474,7 @@ func mediate_turns():
 				$Whos_turn_is_it/Player_or_CPU.text = "[center][u]Jogador 1[/u]"
 		#print("turn_order= ",player_turn_order)
 		$Whos_turn_is_it.visible = true
+			
 	else:
 		game_end_screen()
 		print("Acabou a partida")
@@ -443,6 +539,7 @@ func check_game_end():
 		print("Vencedor: ", winner)
 
 
+# Chama o menu principal
 func go_to_menu():
 	new_menu = menu_principal.instantiate()
 	self.add_child(new_menu)
@@ -451,6 +548,9 @@ func go_to_menu():
 	$Your_symbol_is.visible = false
 	$Cpu_thinking_message.visible = false
 	$Show_winner.visible = false
+	$Keybind_info.visible = false
+	$Audio/Menu_principal.play()
+	game_restarted = false
 
 
 # Chamada logo após a última jogada da partida
@@ -467,3 +567,93 @@ func game_end_screen():
 	elif winner == "Draw":
 		$Show_winner/Winner_name.text = "[center][u]Empate![/u]"
 	
+
+func how_to_play_screen():
+	new_how_to_play = como_jogar.instantiate()
+	self.add_child(new_how_to_play)
+
+
+func _on_inicio_partida_finished() -> void:
+	if player_symbol == "Circle":
+		j1_circle.play()
+	else:
+		j1_x.play()
+
+
+func _on_jogador_1_circulo_finished() -> void:
+	e_a_vez_do.play()
+
+
+func _on_jogador_1x_finished() -> void:
+	e_a_vez_do.play()
+
+
+
+func _on_partida_reiniciada_finished() -> void:
+	if player_symbol == "Circle":
+		j1_circle.play()
+	else:
+		j1_x.play()
+
+
+func _on_e_a_vez_do_finished() -> void:
+	if whos_turn_is_it == $Player:
+		j1.play()
+	elif whos_turn_is_it == $CPU:
+		cpu.play()
+
+
+func _on_jogador_1_finished() -> void:
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+
+
+#func _on_casa_finished() -> void:
+	#e_a_vez_do.play()
+
+
+func _on_a_1_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_a_2_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_a_3_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_b_1_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_b_2_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_b_3_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_c_1_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_c_2_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false
+
+func _on_c_3_finished() -> void:
+	e_a_vez_do.play()
+	for button in get_tree().get_nodes_in_group("navigation_buttons"):
+			button.disabled = false

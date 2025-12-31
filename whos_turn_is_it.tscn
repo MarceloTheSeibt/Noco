@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://ct00emr2s7yrl"]
 
 [node name="Whos_turn_is_it" type="CanvasLayer"]
-offset = Vector2(0, -50)
-transform = Transform2D(1, 0, 0, 1, 0, -50)
+offset = Vector2(-1.93, -50)
+transform = Transform2D(1, 0, 0, 1, -1.93, -50)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_left = 18.0

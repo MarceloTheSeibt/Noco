@@ -1,10 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://cuptktd8gcc7f"]
 
-[ext_resource type="Script" uid="uid://c8od7v8d3r1y7" path="res://player.gd" id="1_s5soq"]
+[ext_resource type="Script" uid="uid://dsumufao7h8xr" path="res://cpu.gd" id="1_lm4ka"]
 
 [node name="CPU" type="Node2D"]
-script = ExtResource("1_s5soq")
+script = ExtResource("1_lm4ka")
 
 [node name="Thinking" type="Timer" parent="."]
+wait_time = 4.0
 one_shot = true
 autostart = true

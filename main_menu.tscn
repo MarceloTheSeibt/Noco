@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b7deqx20xoe7r"]
+[gd_scene load_steps=6 format=3 uid="uid://b7deqx20xoe7r"]
 
 [ext_resource type="FontFile" uid="uid://cjl3kplucq40t" path="res://Fonts/AtkinsonHyperlegibleBold102.ttf" id="1_06t4h"]
 [ext_resource type="Script" uid="uid://dqi72br8va851" path="res://main_menu.gd" id="1_7vrkn"]
+[ext_resource type="AudioStream" uid="uid://dntap1mrfundu" path="res://audio/Novo_jogo.wav" id="3_fu7sn"]
+[ext_resource type="AudioStream" uid="uid://cdkd0xkymjquw" path="res://audio/Como_jogar_mini.wav" id="4_jix8l"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7vrkn"]
 size = Vector2(1152, 648)
@@ -143,6 +145,47 @@ theme_override_fonts/font = ExtResource("1_06t4h")
 theme_override_font_sizes/font_size = 48
 text = "Como Jogar"
 
+[node name="Hidden" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -566.0
+offset_top = -130.79999
+offset_right = -1708.0
+offset_bottom = -768.8
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Hidden" type="Button" parent="CanvasLayer/Hidden" groups=["menu_buttons"]]
+layout_mode = 0
+offset_left = 436.0
+offset_top = 294.0
+offset_right = 444.0
+offset_bottom = 302.0
+focus_neighbor_top = NodePath("../../Como_jogar/Como_jogar")
+focus_neighbor_bottom = NodePath("../../Novo_jogo/Novo_jogo")
+theme_override_colors/font_focus_color = Color(0.95, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.95, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 0)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 0)
+theme_override_fonts/font = ExtResource("1_06t4h")
+theme_override_font_sizes/font_size = 48
+
+[node name="Novo_Jogo_audio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_fu7sn")
+
+[node name="Como_Jogar_mini" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_jix8l")
+
+[connection signal="focus_entered" from="CanvasLayer/Novo_jogo/Novo_jogo" to="." method="_on_novo_jogo_focus_entered"]
 [connection signal="mouse_entered" from="CanvasLayer/Novo_jogo/Novo_jogo" to="." method="_on_novo_jogo_mouse_entered"]
 [connection signal="pressed" from="CanvasLayer/Novo_jogo/Novo_jogo" to="." method="_on_novo_jogo_pressed"]
+[connection signal="focus_entered" from="CanvasLayer/Como_jogar/Como_jogar" to="." method="_on_como_jogar_focus_entered"]
 [connection signal="mouse_entered" from="CanvasLayer/Como_jogar/Como_jogar" to="." method="_on_como_jogar_mouse_entered"]
+[connection signal="pressed" from="CanvasLayer/Como_jogar/Como_jogar" to="." method="_on_como_jogar_pressed"]
