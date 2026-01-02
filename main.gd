@@ -42,6 +42,9 @@ var control = true  # Controle para o áudio reproduzido no primeiro turno
 @onready var j1: Object = $Audio/Jogador_1
 @onready var cpu: Object = $Audio/Cpu
 @onready var posicionou_na_casa: Object = $Audio/Posicionou_na_casa
+@onready var vencedor_e: Object = $Audio/Vencedor_e
+@onready var empate: Object = $Audio/Empate
+@onready var fim_de_partida: Object = $Audio/Fim_de_partida
 #---------------------------------------#
 
 # Called when the node enters the scene tree for the first time.
@@ -57,7 +60,7 @@ func _process(delta: float) -> void:
 				if not button.disabled:
 					game_restarted = true
 					prepare_game()
-					print("Partida Reiniciada")
+
 	elif Input.is_action_just_pressed("main_menu"):
 		if not new_menu:
 			go_to_menu()
@@ -475,9 +478,9 @@ func mediate_turns():
 		#print("turn_order= ",player_turn_order)
 		$Whos_turn_is_it.visible = true
 			
-	else:
-		game_end_screen()
-		print("Acabou a partida")
+	#else:
+		#game_end_screen()
+		#print("Acabou a partida")
 
 # A cada jogada, checa se deu fim de jogo e o vencedor
 func check_game_end():
@@ -527,16 +530,10 @@ func check_game_end():
 		if get_tree().get_node_count_in_group("navigation_buttons") == 0:
 			game_ended = true
 			winner_symbol = "Draw"  # Em caso de empate
+			
 	if game_ended:
-		if winner_symbol == player_symbol:
-			winner = $Player
-			$Player.score += 1
-		elif winner_symbol != player_symbol:
-			winner = $CPU
-			$CPU.score += 1
-		else:
-			winner = "Draw"
-		print("Vencedor: ", winner)
+		game_end()
+		game_end_screen()
 
 
 # Chama o menu principal
@@ -614,46 +611,72 @@ func _on_jogador_1_finished() -> void:
 
 
 func _on_a_1_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_a_2_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_a_3_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_b_1_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_b_2_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_b_3_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_c_1_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_c_2_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
 
 func _on_c_3_finished() -> void:
-	e_a_vez_do.play()
-	for button in get_tree().get_nodes_in_group("navigation_buttons"):
-			button.disabled = false
+	after_symbol_placed()
+
+
+func after_symbol_placed():
+	if not game_ended:
+		e_a_vez_do.play()
+		await e_a_vez_do.finished
+		if whos_turn_is_it != $CPU:
+			for button in get_tree().get_nodes_in_group("navigation_buttons"):
+				button.disabled = false
+
+
+func game_end():
+	if winner_symbol == player_symbol:
+		winner = $Player
+		$Player.score += 1
+	elif winner_symbol == cpu_symbol:
+		winner = $CPU
+		$CPU.score += 1
+	else:
+		winner = "Draw"
+	
+	fim_de_partida.play()
+	await fim_de_partida.finished
+	
+	vencedor_e.play()
+	await vencedor_e.finished
+	
+	if winner == $Player:
+		j1.play()
+		await j1.finished
+	elif winner == $CPU:
+		cpu.play()
+		await cpu.finished
+	elif winner == "Draw":
+		empate.play()
+		await empate.finished
