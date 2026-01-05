@@ -1,4 +1,4 @@
-Esse repositório possui código-fonte do programa e os lançamentos beta e final.
+Este repositório possui código-fonte do programa e os lançamentos beta e final.
 Para ter acesso ao código-fonte da versão beta altere o branch.
 
 Como baixar o jogo:
