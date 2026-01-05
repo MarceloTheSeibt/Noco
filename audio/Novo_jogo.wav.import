@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dntap1mrfundu"
-path="res://.godot/imported/Novo_jogo.wav-ff8ac6f4d9db8dc73731b1f5ac564885.sample"
+path="res://.godot/imported/Novo_jogo.wav-f3c6bf8e475352de8851e477efd6563d.sample"
 
 [deps]
 
-source_file="res://audio/Novo_jogo.wav"
-dest_files=["res://.godot/imported/Novo_jogo.wav-ff8ac6f4d9db8dc73731b1f5ac564885.sample"]
+source_file="res://Audio/Novo_jogo.wav"
+dest_files=["res://.godot/imported/Novo_jogo.wav-f3c6bf8e475352de8851e477efd6563d.sample"]
 
 [params]
 

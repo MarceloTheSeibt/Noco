@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dgwhwpxu2envr"
-path="res://.godot/imported/Fim_de_partida.wav-73c70450269da59e433accbefb1945b9.sample"
+path="res://.godot/imported/Fim_de_partida.wav-a0947228e940ca02007f9c89bded2834.sample"
 
 [deps]
 
-source_file="res://audio/Fim_de_partida.wav"
-dest_files=["res://.godot/imported/Fim_de_partida.wav-73c70450269da59e433accbefb1945b9.sample"]
+source_file="res://Audio/Fim_de_partida.wav"
+dest_files=["res://.godot/imported/Fim_de_partida.wav-a0947228e940ca02007f9c89bded2834.sample"]
 
 [params]
 

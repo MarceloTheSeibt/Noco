@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dypnvnlv38x4g"
-path="res://.godot/imported/CPU.wav-2882a74ba9d9eb181699ca6d08d9fb0f.sample"
+path="res://.godot/imported/CPU.wav-f5177229b8653e7f02e8d94fc0a6dc5a.sample"
 
 [deps]
 
-source_file="res://audio/CPU.wav"
-dest_files=["res://.godot/imported/CPU.wav-2882a74ba9d9eb181699ca6d08d9fb0f.sample"]
+source_file="res://Audio/CPU.wav"
+dest_files=["res://.godot/imported/CPU.wav-f5177229b8653e7f02e8d94fc0a6dc5a.sample"]
 
 [params]
 

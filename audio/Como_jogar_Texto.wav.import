@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://qtsvg1bsc15s"
-path="res://.godot/imported/Como_jogar_Texto.wav-8b927c9f020b3f8c618d6ffb3ee3b87d.sample"
+path="res://.godot/imported/Como_jogar_Texto.wav-32272a23e7a4b6fc550b38344fef7660.sample"
 
 [deps]
 
-source_file="res://audio/Como_jogar_Texto.wav"
-dest_files=["res://.godot/imported/Como_jogar_Texto.wav-8b927c9f020b3f8c618d6ffb3ee3b87d.sample"]
+source_file="res://Audio/Como_jogar_Texto.wav"
+dest_files=["res://.godot/imported/Como_jogar_Texto.wav-32272a23e7a4b6fc550b38344fef7660.sample"]
 
 [params]
 

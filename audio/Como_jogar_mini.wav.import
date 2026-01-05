@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://cdkd0xkymjquw"
-path="res://.godot/imported/Como_jogar_mini.wav-e4333bed85d4dbd8414649830cf4b8de.sample"
+path="res://.godot/imported/Como_jogar_mini.wav-fb6f44450dc01e36b94fe1f2589fe0e4.sample"
 
 [deps]
 
-source_file="res://audio/Como_jogar_mini.wav"
-dest_files=["res://.godot/imported/Como_jogar_mini.wav-e4333bed85d4dbd8414649830cf4b8de.sample"]
+source_file="res://Audio/Como_jogar_mini.wav"
+dest_files=["res://.godot/imported/Como_jogar_mini.wav-fb6f44450dc01e36b94fe1f2589fe0e4.sample"]
 
 [params]
 

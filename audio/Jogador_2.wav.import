@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dvexkppoxmwnh"
-path="res://.godot/imported/Jogador_2.wav-e94120b911e745861140b388210e5bb4.sample"
+path="res://.godot/imported/Jogador_2.wav-6ae4d66ffc7599762516f8617f87d25d.sample"
 
 [deps]
 
-source_file="res://audio/Jogador_2.wav"
-dest_files=["res://.godot/imported/Jogador_2.wav-e94120b911e745861140b388210e5bb4.sample"]
+source_file="res://Audio/Jogador_2.wav"
+dest_files=["res://.godot/imported/Jogador_2.wav-6ae4d66ffc7599762516f8617f87d25d.sample"]
 
 [params]
 

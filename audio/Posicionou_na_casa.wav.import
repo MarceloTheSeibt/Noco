@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://lt0q12cou7cd"
-path="res://.godot/imported/Posicionou_na_casa.wav-960e05d055e77d9bd2c13dbf4eb94036.sample"
+path="res://.godot/imported/Posicionou_na_casa.wav-7d06b7acc1aad63e269c6686b3669f23.sample"
 
 [deps]
 
-source_file="res://audio/Posicionou_na_casa.wav"
-dest_files=["res://.godot/imported/Posicionou_na_casa.wav-960e05d055e77d9bd2c13dbf4eb94036.sample"]
+source_file="res://Audio/Posicionou_na_casa.wav"
+dest_files=["res://.godot/imported/Posicionou_na_casa.wav-7d06b7acc1aad63e269c6686b3669f23.sample"]
 
 [params]
 

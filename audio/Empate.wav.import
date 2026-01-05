@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://d2vkbwbohbbco"
-path="res://.godot/imported/Empate.wav-a82069e9d5fd605cab9d5ecfaf6a63d1.sample"
+path="res://.godot/imported/Empate.wav-dd4b7229813bcf67f2dbe133e9559379.sample"
 
 [deps]
 
-source_file="res://audio/Empate.wav"
-dest_files=["res://.godot/imported/Empate.wav-a82069e9d5fd605cab9d5ecfaf6a63d1.sample"]
+source_file="res://Audio/Empate.wav"
+dest_files=["res://.godot/imported/Empate.wav-dd4b7229813bcf67f2dbe133e9559379.sample"]
 
 [params]
 

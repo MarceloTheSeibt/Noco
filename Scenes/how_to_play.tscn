@@ -1,0 +1,111 @@
+[gd_scene load_steps=5 format=3 uid="uid://de0jx42k448w4"]
+
+[ext_resource type="PackedScene" uid="uid://ee010vqtk442" path="res://Scenes/return_to_menu_info.tscn" id="2_g0446"]
+[ext_resource type="FontFile" uid="uid://cjl3kplucq40t" path="res://Fonts/AtkinsonHyperlegibleBold102.ttf" id="2_uvb5p"]
+[ext_resource type="AudioStream" uid="uid://qtsvg1bsc15s" path="res://Audio/Como_jogar_Texto.wav" id="3_uvb5p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7vrkn"]
+size = Vector2(1152, 648)
+
+[node name="How_to_play" type="Area2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(576, 324)
+shape = SubResource("RectangleShape2D_7vrkn")
+debug_color = Color(0, 0, 0, 0.41960785)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/CenterContainer"]
+layout_mode = 2
+
+[node name="White" type="ColorRect" parent="CanvasLayer/CenterContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -112.5
+offset_top = -81.0
+offset_right = 112.5
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4.905, 3.605)
+pivot_offset = Vector2(112.5, 81)
+size_flags_horizontal = 4
+
+[node name="Black" type="ColorRect" parent="CanvasLayer/CenterContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -112.5
+offset_top = -81.0
+offset_right = 112.5
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4.87, 3.565)
+pivot_offset = Vector2(112.5, 81)
+size_flags_horizontal = 4
+color = Color(0, 0, 0, 1)
+
+[node name="Como_Jogar" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -225.76
+offset_bottom = -225.76001
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Como_Jogar" type="RichTextLabel" parent="CanvasLayer/Como_Jogar"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_uvb5p")
+theme_override_font_sizes/normal_font_size = 61
+bbcode_enabled = true
+text = "[center]Como Jogar"
+fit_content = true
+autowrap_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+offset_left = 128.0
+offset_top = 162.415
+offset_right = 1024.0
+offset_bottom = 650.41437
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+text = "Como jogar o Jogo da Velha: imagine um tabuleiro com 3 linhas e 3 colunas, dispostos como se fosse um teclado de telefone antigo de 1 a 9. Seu objetivo é completar uma linha, coluna ou diagonal com o seu símbolo (sendo X ou círculo).
+
+Cada casa do tabuleiro terá um nome para facilitar sua localização. Semelhante a uma planilha de Excel, por exemplo: a primeira casa no topo na primeira coluna é chamada A1, logo abaixo dela A2 e por último A3. Na segunda coluna, temos B1, B2 e B3. Na última coluna, C1, C2 e C3.
+
+Você poderá navegar pelas casas usando as setas do teclado ou o mouse, o que preferir. Use a tecla Enter ou o mouse para confirmar o posicionamento do símbolo.
+
+A partida é jogada em turnos, ou seja, primeiro um jogador posiciona um de seus símbolos, então o outro jogador também faz o mesmo e assim por diante. O símbolo de cada jogador e a ordem de jogada é escolhida pelo jogo de maneira aleatória no início da partida.
+
+A partida acaba assim que a primeira linha, coluna ou diagonal for completa por um dos jogadores, o vencedor será declarado e ganhará 1 ponto. Caso não houver mais espaço no tabuleiro e ninguém tenha conseguido completar o requisito para vitória,  a partida acabará e será declarado empate e nenhum jogador recebe pontos.
+"
+fit_content = true
+horizontal_alignment = 3
+justification_flags = 171
+
+[node name="Keybind_info" parent="." instance=ExtResource("2_g0446")]
+offset = Vector2(886.19, -138.935)
+transform = Transform2D(1, 0, 0, 1, 886.19, -138.935)
+
+[node name="How_to_play_explain" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_uvb5p")
+autoplay = true

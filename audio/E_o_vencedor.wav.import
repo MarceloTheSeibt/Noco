@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://d156dh0q382o5"
-path="res://.godot/imported/E_o_vencedor.wav-f2c1a2558dc0e52b88096382c91c6b76.sample"
+path="res://.godot/imported/E_o_vencedor.wav-a1e98707f9a7d8bfa0a0aaa803cc4498.sample"
 
 [deps]
 
-source_file="res://audio/E_o_vencedor.wav"
-dest_files=["res://.godot/imported/E_o_vencedor.wav-f2c1a2558dc0e52b88096382c91c6b76.sample"]
+source_file="res://Audio/E_o_vencedor.wav"
+dest_files=["res://.godot/imported/E_o_vencedor.wav-a1e98707f9a7d8bfa0a0aaa803cc4498.sample"]
 
 [params]
 

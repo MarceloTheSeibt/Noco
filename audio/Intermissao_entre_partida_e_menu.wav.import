@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://b457yjmfjb5wg"
-path="res://.godot/imported/Intermissao_entre_partida_e_menu.wav-f2fac6c99479e95dfa27098e0e629ba1.sample"
+path="res://.godot/imported/Intermissao_entre_partida_e_menu.wav-111af11a9b3bd5895959795de9d1a720.sample"
 
 [deps]
 
-source_file="res://audio/Intermissao_entre_partida_e_menu.wav"
-dest_files=["res://.godot/imported/Intermissao_entre_partida_e_menu.wav-f2fac6c99479e95dfa27098e0e629ba1.sample"]
+source_file="res://Audio/Intermissao_entre_partida_e_menu.wav"
+dest_files=["res://.godot/imported/Intermissao_entre_partida_e_menu.wav-111af11a9b3bd5895959795de9d1a720.sample"]
 
 [params]
 
