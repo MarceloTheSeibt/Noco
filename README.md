@@ -10,3 +10,5 @@ Como baixar o jogo:
 3 - Extraia o arquivo .rar em qualquer local do seu computador.
 
 4 - Abra a pasta extraída e abra o arquivo .exe.
+
+Link para o formulário para feedback: https://docs.google.com/forms/d/e/1FAIpQLSfncbyh0A0Pz0VtSV3FuIaf7yA3reUhwhaO0TdHmtoPwS6dfg/viewform?usp=dialog
