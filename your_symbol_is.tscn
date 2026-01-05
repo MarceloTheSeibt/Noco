@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://wuy1mq7sw2gg"]
 
 [node name="Your_symbol_is" type="CanvasLayer"]
+offset = Vector2(0, 170)
+transform = Transform2D(1, 0, 0, 1, 0, 170)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_left = 18.0
@@ -50,7 +52,3 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 126
 text = "○"
 horizontal_alignment = 1
-
-[node name="Button" type="Button" parent="."]
-offset_right = 8.0
-offset_bottom = 8.0
